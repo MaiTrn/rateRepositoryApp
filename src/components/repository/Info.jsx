@@ -4,17 +4,24 @@ import theme from "../../theme";
 
 import Text from "../others/Text";
 
+const round = (value, decimals = 1) => {
+  return Math.round(value * 10 ** decimals) / 10 ** decimals;
+};
+
 const Info = ({ data, label }) => {
-  let renderedData = data;
-  if (data / 1000 >= 1) {
-    renderedData =
-      Number(
-        (data / 1000).toPrecision(Math.ceil(data / 1000).toString().length + 1)
-      ) + "k";
+  if (typeof data !== "number") {
+    return undefined;
   }
+  let renderedData = data;
+  if (data > 1000) {
+    renderedData = round(data / 1000);
+  }
+
   return (
     <View style={styles.container}>
-      <Text fontWeight="bold">{renderedData}</Text>
+      <Text fontWeight="bold" style={styles.counter}>
+        {renderedData.toLocaleString()}
+      </Text>
       <Text color="secondary">{label}</Text>
     </View>
   );
@@ -24,9 +31,12 @@ export default Info;
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: theme.spacing.m,
-    paddingTop: theme.spacing.m,
+    flexGrow: 0,
+  },
+  counter: {
+    marginBottom: theme.spacing.s,
   },
 });

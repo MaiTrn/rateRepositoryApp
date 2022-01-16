@@ -14,8 +14,7 @@ const Main = () => {
       <Routes>
         <Route path="/signIn" element={<SignIn />} />
         <Route path="/" exact element={<RepositoryList />} />
-
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </View>
   );

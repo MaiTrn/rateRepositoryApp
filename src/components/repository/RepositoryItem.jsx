@@ -8,24 +8,32 @@ import Info from "./Info";
 const RepositoryItem = ({ item }) => {
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: "row", height: 90 }}>
+      <View style={styles.topContainer}>
         <View style={styles.avatarContainer}>
-          <Image style={styles.avatar} source={{ uri: item.ownerAvatarUrl }} />
+          <Image source={{ uri: item.ownerAvatarUrl }} style={styles.avatar} />
         </View>
-        <View style={styles.infoContainer}>
-          <Text fontWeight="bold">{item.fullName}</Text>
-          <Text color="secondary">{item.description}</Text>
-          <View style={styles.languageContainer}>
-            <Text color="white">{item.language}</Text>
-          </View>
+        <View style={styles.contentContainer}>
+          <Text
+            style={styles.nameText}
+            fontWeight="bold"
+            fontSize="subheading"
+            numberOfLines={1}
+          >
+            {item.fullName}
+          </Text>
+          <Text style={styles.descriptionText} color="secondary">
+            {item.description}
+          </Text>
+          {item.language ? (
+            <View style={styles.languageContainer}>
+              <Text color="white" style={styles.languageText}>
+                {item.language}
+              </Text>
+            </View>
+          ) : null}
         </View>
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-        }}
-      >
+      <View style={styles.bottomContainer}>
         <Info data={item.stargazersCount} label="Stars" />
         <Info data={item.forksCount} label="Forks" />
         <Info data={item.reviewCount} label="Reviews" />
@@ -41,21 +49,43 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.white,
     padding: theme.spacing.m,
-    marginBottom: theme.spacing.s,
   },
-  avatar: { width: 50, height: 50, borderRadius: theme.spacing.s },
-  avatarContainer: { flexGrow: 0 },
-  infoContainer: {
+  topContainer: {
+    flexDirection: "row",
+    marginBottom: theme.spacing.m,
+  },
+  bottomContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  avatarContainer: {
     flexGrow: 0,
+  },
+  contentContainer: {
+    flexGrow: 1,
+    flexShrink: 1,
     marginHorizontal: theme.spacing.m,
-    justifyContent: "space-between",
+  },
+  nameText: {
+    marginBottom: 5,
+  },
+  descriptionText: {
+    flexGrow: 1,
+  },
+  avatar: {
+    width: 45,
+    height: 45,
+    borderRadius: theme.spacing.s,
   },
   languageContainer: {
-    padding: theme.spacing.s,
-    width: 80,
-    alignItems: "center",
-    justifyContent: "center",
+    marginTop: 10,
+    flexDirection: "row",
+  },
+  languageText: {
     backgroundColor: theme.colors.primary,
     borderRadius: theme.spacing.s,
+    flexGrow: 0,
+    paddingVertical: 3,
+    paddingHorizontal: 6,
   },
 });
