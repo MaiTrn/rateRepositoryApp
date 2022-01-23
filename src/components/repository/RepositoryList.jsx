@@ -1,34 +1,143 @@
-import React from "react";
-import { FlatList, View, StyleSheet, Text } from "react-native";
+import React, { useState } from "react";
+import { FlatList, StyleSheet, Pressable } from "react-native";
+import { useNavigate } from "react-router-native";
+import { Searchbar } from "react-native-paper";
+import { useDebounce } from "use-debounce";
+
 import useRepositories from "../../hooks/useRepositories";
-
 import RepositoryItem from "./RepositoryItem";
+import SortByPicker from "./SortByPicker";
+import ItemSeparator from "../../utils/ItemSeparator";
+import theme from "../../theme";
 
-const ItemSeparator = () => <View style={styles.separator} />;
-
-const RepositoryList = () => {
-  const { repositories, loading } = useRepositories();
-
-  // Get the nodes from the edges array
-  const repositoryNodes = repositories
-    ? repositories.edges.map((edge) => edge.node)
-    : [];
-
-  if (loading) {
-    return <Text style={{ textAlign: "center" }}>loading...</Text>;
+export class RepositoryListContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      // Get the nodes from the edges array
+      repositoryNodes: this.props.repositories
+        ? this.props.repositories.edges.map((edge) => edge.node)
+        : [],
+    };
   }
 
-  const onEndReach = () => {
-    console.log("You have reached the end of the list");
+  componentDidUpdate(prevProps) {
+    if (prevProps.repositories !== this.props.repositories) {
+      this.setState({
+        repositoryNodes: this.props.repositories
+          ? this.props.repositories.edges.map((edge) => edge.node)
+          : [],
+      });
+    }
+  }
+
+  renderHeader = () => {
+    const props = this.props;
+    return (
+      <RepositoryListHeader
+        searchQuery={props.searchQuery}
+        changeSearchQuery={props.changeSearchQuery}
+        selectedValue={props.selectedValue}
+        onChange={props.onChange}
+      />
+    );
   };
+
+  repositoryItemContainer = ({ item }) => (
+    <Pressable onPress={() => this.props.navigate(`/repository/${item.id}`)}>
+      <RepositoryItem item={item} />
+    </Pressable>
+  );
+  render() {
+    return (
+      <FlatList
+        keyExtractor={(item) => `${item.id}`}
+        ListHeaderComponent={this.renderHeader}
+        data={this.state.repositoryNodes}
+        ItemSeparatorComponent={ItemSeparator}
+        renderItem={this.repositoryItemContainer}
+        onEndReachedThreshold={0.5}
+        onEndReached={this.props.onEndReach}
+      />
+    );
+  }
+}
+
+const RepositoryListHeader = ({
+  searchQuery,
+  changeSearchQuery,
+  selectedValue,
+  onChange,
+}) => {
   return (
-    <FlatList
-      keyExtractor={(item) => `${item.id}`}
-      data={repositoryNodes}
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={RepositoryItem}
-      onEndReached={onEndReach}
-      onEndReachedThreshold={0.5}
+    <>
+      <Searchbar
+        placeholder="Search..."
+        value={searchQuery}
+        onChangeText={(value) => changeSearchQuery(value)}
+        style={styles.searchBar}
+      />
+      <SortByPicker selectedValue={selectedValue} onChange={onChange} />
+    </>
+  );
+};
+
+const RepositoryList = () => {
+  const [order, setOrder] = useState({
+    label: "Latest repositories",
+    orderBy: "CREATED_AT",
+    orderDirection: "DESC",
+  });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchValue] = useDebounce(searchQuery, 500);
+
+  const { repositories, fetchMore } = useRepositories({
+    first: 6,
+    orderBy: order.orderBy,
+    orderDirection: order.orderDirection,
+    searchKeyword: searchValue ? searchValue : "",
+  });
+  const navigate = useNavigate();
+
+  const onChange = (itemValue) => {
+    switch (itemValue) {
+      case "Latest repositories":
+        setOrder({
+          label: "Latest repositories",
+          orderBy: "CREATED_AT",
+          orderDirection: "DESC",
+        });
+        break;
+      case "Highest rated repositories":
+        setOrder({
+          label: "Highest rated repositories",
+          orderBy: "RATING_AVERAGE",
+          orderDirection: "DESC",
+        });
+        break;
+      case "Lowest rated repositories":
+        setOrder({
+          label: "Lowest rated repositories",
+          orderBy: "RATING_AVERAGE",
+          orderDirection: "ASC",
+        });
+        break;
+    }
+  };
+
+  const onEndReach = () => {
+    fetchMore();
+  };
+
+  return (
+    <RepositoryListContainer
+      repositories={repositories}
+      navigate={navigate}
+      selectedValue={order.label}
+      onChange={onChange}
+      searchQuery={searchQuery}
+      changeSearchQuery={setSearchQuery}
+      onEndReach={onEndReach}
     />
   );
 };
@@ -36,7 +145,8 @@ const RepositoryList = () => {
 export default RepositoryList;
 
 const styles = StyleSheet.create({
-  separator: {
-    height: 10,
+  searchBar: {
+    marginHorizontal: theme.spacing.m,
+    marginTop: theme.spacing.m,
   },
 });

@@ -1,13 +1,25 @@
 import React from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Pressable } from "react-native";
+import * as Linking from "expo-linking";
 
 import Text from "../others/Text";
 import theme from "../../theme";
-import Info from "./Info";
+import formatInThousands from "../../utils/formatInThousands";
 
-const RepositoryItem = ({ item }) => {
+const CountItem = ({ data, label }) => {
   return (
-    <View style={styles.container}>
+    <View style={styles.countItemContainer}>
+      <Text fontWeight="bold" style={styles.counter}>
+        {formatInThousands(data)}
+      </Text>
+      <Text color="secondary">{label}</Text>
+    </View>
+  );
+};
+
+const RepositoryItem = ({ item, single }) => {
+  return (
+    <View testID="repositoryItem" style={styles.container}>
       <View style={styles.topContainer}>
         <View style={styles.avatarContainer}>
           <Image source={{ uri: item.ownerAvatarUrl }} style={styles.avatar} />
@@ -34,11 +46,21 @@ const RepositoryItem = ({ item }) => {
         </View>
       </View>
       <View style={styles.bottomContainer}>
-        <Info data={item.stargazersCount} label="Stars" />
-        <Info data={item.forksCount} label="Forks" />
-        <Info data={item.reviewCount} label="Reviews" />
-        <Info data={item.ratingAverage} label="Rating" />
+        <CountItem data={item.stargazersCount} label="Stars" />
+        <CountItem data={item.forksCount} label="Forks" />
+        <CountItem data={item.reviewCount} label="Reviews" />
+        <CountItem data={item.ratingAverage} label="Rating" />
       </View>
+      {single && (
+        <Pressable
+          style={styles.button}
+          onPress={() => Linking.openURL(item.url)}
+        >
+          <Text color="white" fontWeight="bold">
+            Open in GitHub
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
 };
@@ -67,7 +89,7 @@ const styles = StyleSheet.create({
     marginHorizontal: theme.spacing.m,
   },
   nameText: {
-    marginBottom: 5,
+    marginBottom: theme.spacing.s,
   },
   descriptionText: {
     flexGrow: 1,
@@ -87,5 +109,24 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     paddingVertical: 3,
     paddingHorizontal: 6,
+  },
+  countItemContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: theme.spacing.m,
+    flexGrow: 0,
+  },
+  counter: {
+    marginBottom: theme.spacing.s,
+  },
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    minWidth: 64,
+    padding: theme.spacing.m,
+    marginTop: theme.spacing.m,
+    marginHorizontal: theme.spacing.s,
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.spacing.s,
   },
 });

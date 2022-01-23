@@ -2,11 +2,13 @@ import React from "react";
 import { TextInput as NativeTextInput, StyleSheet } from "react-native";
 import theme from "../../theme";
 
-const TextInput = ({ style, error, ...props }) => {
+const TextInput = React.forwardRef(({ style, error, ...props }, ref) => {
   const textInputStyle = [style, styles.textInput, error && styles.error];
 
-  return <NativeTextInput style={textInputStyle} {...props} />;
-};
+  return <NativeTextInput style={textInputStyle} ref={ref} {...props} />;
+});
+
+TextInput.displayName = "TextInput";
 
 export default TextInput;
 

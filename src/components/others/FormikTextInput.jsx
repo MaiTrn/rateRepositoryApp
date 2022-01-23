@@ -6,7 +6,7 @@ import TextInput from "./TextInput";
 import Text from "./Text";
 import theme from "../../theme";
 
-const FormikTextInput = ({ name, ...props }) => {
+const FormikTextInput = React.forwardRef(({ name, ...props }, ref) => {
   const [field, meta, helpers] = useField(name);
   const showError = meta.touched && meta.error;
 
@@ -17,12 +17,15 @@ const FormikTextInput = ({ name, ...props }) => {
         onBlur={() => helpers.setTouched(true)}
         value={field.value}
         error={showError}
+        ref={ref}
         {...props}
       />
       {showError && <Text style={styles.errorText}>{meta.error}</Text>}
     </>
   );
-};
+});
+
+FormikTextInput.displayName = "FormikTextInput";
 
 export default FormikTextInput;
 

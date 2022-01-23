@@ -4,8 +4,10 @@ import Text from "../others/Text";
 import theme from "../../theme";
 import FormikTextInput from "../others/FormikTextInput";
 
-const SignInForm = ({ onSubmit }) => {
+const SignUpForm = ({ onSubmit }) => {
   const password = React.useRef(null);
+  const passwordConfirm = React.useRef(null);
+
   return (
     <View style={styles.container}>
       <FormikTextInput
@@ -15,22 +17,30 @@ const SignInForm = ({ onSubmit }) => {
         onSubmitEditing={() => password.current?.focus()}
       />
       <FormikTextInput
-        name="password"
-        secureTextEntry
-        placeholder="Password"
         ref={password}
+        name="password"
+        placeholder="Password"
+        secureTextEntry
+        returnKeyType="next"
+        onSubmitEditing={() => passwordConfirm.current?.focus()}
+      />
+      <FormikTextInput
+        ref={passwordConfirm}
+        name="passwordConfirm"
+        placeholder="Confirm password"
+        secureTextEntry
         onSubmitEditing={() => onSubmit()}
       />
       <Pressable style={styles.button} onPress={onSubmit}>
         <Text color="white" fontWeight="bold">
-          Sign in
+          Sign up
         </Text>
       </Pressable>
     </View>
   );
 };
 
-export default SignInForm;
+export default SignUpForm;
 
 const styles = StyleSheet.create({
   container: {
