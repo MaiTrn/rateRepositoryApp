@@ -3,7 +3,7 @@ import { FlatList, View } from "react-native";
 
 import useAuthorizedUser from "../../hooks/useAuthorizedUser";
 import ReviewInfo from "./ReviewInfo";
-import ItemSeparator from "../../utils/ItemSeparator";
+import ItemSeparator from "../others/ItemSeparator";
 import { useMutation } from "@apollo/client";
 import { DELETE_REVIEW } from "../../graphql/mutations";
 import Text from "../others/Text";

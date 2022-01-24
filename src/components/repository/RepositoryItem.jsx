@@ -1,10 +1,11 @@
 import React from "react";
-import { View, StyleSheet, Image, Pressable } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import * as Linking from "expo-linking";
 
 import Text from "../others/Text";
 import theme from "../../theme";
 import formatInThousands from "../../utils/formatInThousands";
+import Button from "../others/Button";
 
 const CountItem = ({ data, label }) => {
   return (
@@ -52,14 +53,9 @@ const RepositoryItem = ({ item, single }) => {
         <CountItem data={item.ratingAverage} label="Rating" />
       </View>
       {single && (
-        <Pressable
-          style={styles.button}
-          onPress={() => Linking.openURL(item.url)}
-        >
-          <Text color="white" fontWeight="bold">
-            Open in GitHub
-          </Text>
-        </Pressable>
+        <Button onPress={() => Linking.openURL(item.url)} style={styles.button}>
+          Open in GitHub
+        </Button>
       )}
     </View>
   );
@@ -120,13 +116,7 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.s,
   },
   button: {
-    alignItems: "center",
-    justifyContent: "center",
-    minWidth: 64,
-    padding: theme.spacing.m,
     marginTop: theme.spacing.m,
     marginHorizontal: theme.spacing.s,
-    backgroundColor: theme.colors.primary,
-    borderRadius: theme.spacing.s,
   },
 });

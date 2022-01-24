@@ -1,9 +1,10 @@
 import React from "react";
-import { View, StyleSheet, Pressable, Alert } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import { format } from "date-fns";
 
 import theme from "../../theme";
 import Text from "../others/Text";
+import Button from "../others/Button";
 import { useNavigate } from "react-router-native";
 
 const ReviewInfo = ({ title, item, own, onDelete }) => {
@@ -50,22 +51,15 @@ const ReviewInfo = ({ title, item, own, onDelete }) => {
       </View>
       {own && (
         <View style={styles.buttonContainer}>
-          <Pressable
-            style={{ ...styles.button, backgroundColor: theme.colors.primary }}
+          <Button
+            style={styles.actionButton}
             onPress={() => navigate(`/repository/${item.repository.id}`)}
           >
-            <Text color="white" fontWeight="bold">
-              View Repository
-            </Text>
-          </Pressable>
-          <Pressable
-            style={{ ...styles.button, backgroundColor: theme.colors.error }}
-            onPress={confirmDelete}
-          >
-            <Text color="white" fontWeight="bold">
-              Delete review
-            </Text>
-          </Pressable>
+            View Repository
+          </Button>
+          <Button color="error" onPress={confirmDelete}>
+            Delete review
+          </Button>
         </View>
       )}
     </View>
@@ -75,11 +69,17 @@ const ReviewInfo = ({ title, item, own, onDelete }) => {
 export default ReviewInfo;
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: theme.colors.white, padding: theme.spacing.m },
+  container: {
+    backgroundColor: theme.colors.white,
+    padding: theme.spacing.m,
+  },
   infoContainter: {
     flexDirection: "row",
   },
-  buttonContainer: { flexDirection: "row", justifyContent: "space-between" },
+  buttonContainer: {
+    marginTop: theme.spacing.m,
+    flexDirection: "row",
+  },
   topContainer: {
     marginBottom: theme.spacing.s,
   },
@@ -103,12 +103,5 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     marginBottom: theme.spacing.m,
   },
-  button: {
-    marginTop: theme.spacing.m,
-    paddingHorizontal: 40,
-    paddingVertical: theme.spacing.m,
-    borderRadius: theme.spacing.s,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  actionButton: { marginRight: 10 },
 });

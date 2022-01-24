@@ -1,9 +1,10 @@
 import React, { useRef } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import Text from "../others/Text";
 import FormikTextInput from "../others/FormikTextInput";
 import theme from "../../theme";
+import Button from "../others/Button";
 
 const ReviewForm = ({ onSubmit, error }) => {
   const repoName = useRef(null);
@@ -41,11 +42,9 @@ const ReviewForm = ({ onSubmit, error }) => {
         onSubmitEditing={() => onSubmit()}
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
-      <Pressable style={styles.button} onPress={onSubmit}>
-        <Text color="white" fontWeight="bold">
-          Create a review
-        </Text>
-      </Pressable>
+      <Button onPress={onSubmit} style={styles.button}>
+        Create a review
+      </Button>
     </View>
   );
 };
@@ -58,14 +57,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   button: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: theme.spacing.m,
-    paddingHorizontal: 20,
     marginTop: theme.spacing.m,
-    minWidth: 64,
-    borderRadius: theme.spacing.s,
-    backgroundColor: theme.colors.primary,
   },
   errorText: {
     marginTop: theme.spacing.s,

@@ -1,8 +1,8 @@
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
-import Text from "../others/Text";
+import { StyleSheet, View } from "react-native";
 import theme from "../../theme";
 import FormikTextInput from "../others/FormikTextInput";
+import Button from "../others/Button";
 
 const SignUpForm = ({ onSubmit }) => {
   const password = React.useRef(null);
@@ -31,11 +31,9 @@ const SignUpForm = ({ onSubmit }) => {
         secureTextEntry
         onSubmitEditing={() => onSubmit()}
       />
-      <Pressable style={styles.button} onPress={onSubmit}>
-        <Text color="white" fontWeight="bold">
-          Sign up
-        </Text>
-      </Pressable>
+      <Button style={styles.button} onPress={onSubmit}>
+        Sign up
+      </Button>
     </View>
   );
 };
@@ -48,13 +46,6 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   button: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: theme.spacing.m,
-    paddingHorizontal: 20,
     marginTop: theme.spacing.m,
-    minWidth: 64,
-    borderRadius: theme.spacing.s,
-    backgroundColor: theme.colors.primary,
   },
 });

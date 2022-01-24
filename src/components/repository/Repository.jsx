@@ -5,7 +5,7 @@ import { useParams } from "react-router-native";
 import RepositoryItem from "./RepositoryItem";
 import ReviewInfo from "./ReviewInfo";
 import useRepository from "../../hooks/useRepository";
-import ItemSeparator from "../../utils/ItemSeparator";
+import ItemSeparator from "../others/ItemSeparator";
 
 const Repository = () => {
   const [reviews, setReviews] = useState();

@@ -7,7 +7,7 @@ import { useDebounce } from "use-debounce";
 import useRepositories from "../../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
 import SortByPicker from "./SortByPicker";
-import ItemSeparator from "../../utils/ItemSeparator";
+import ItemSeparator from "../others/ItemSeparator";
 import theme from "../../theme";
 
 export class RepositoryListContainer extends React.Component {
@@ -43,11 +43,14 @@ export class RepositoryListContainer extends React.Component {
     );
   };
 
-  repositoryItemContainer = ({ item }) => (
-    <Pressable onPress={() => this.props.navigate(`/repository/${item.id}`)}>
-      <RepositoryItem item={item} />
-    </Pressable>
-  );
+  repositoryItemContainer = ({ item }) => {
+    console.log(item);
+    return (
+      <Pressable onPress={() => this.props.onRepositoryPress(item.id)}>
+        <RepositoryItem item={item} />
+      </Pressable>
+    );
+  };
   render() {
     return (
       <FlatList
@@ -82,48 +85,32 @@ const RepositoryListHeader = ({
   );
 };
 
-const RepositoryList = () => {
-  const [order, setOrder] = useState({
-    label: "Latest repositories",
+const orderByVariables = {
+  latest: {
     orderBy: "CREATED_AT",
     orderDirection: "DESC",
-  });
+  },
+  highestRating: {
+    orderBy: "RATING_AVERAGE",
+    orderDirection: "DESC",
+  },
+  lowestRating: {
+    orderBy: "RATING_AVERAGE",
+    orderDirection: "ASC",
+  },
+};
+
+const RepositoryList = () => {
+  const [order, setOrder] = useState("latest");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchValue] = useDebounce(searchQuery, 500);
 
   const { repositories, fetchMore } = useRepositories({
+    ...orderByVariables[order],
     first: 6,
-    orderBy: order.orderBy,
-    orderDirection: order.orderDirection,
-    searchKeyword: searchValue ? searchValue : "",
+    searchKeyword: searchValue,
   });
   const navigate = useNavigate();
-
-  const onChange = (itemValue) => {
-    switch (itemValue) {
-      case "Latest repositories":
-        setOrder({
-          label: "Latest repositories",
-          orderBy: "CREATED_AT",
-          orderDirection: "DESC",
-        });
-        break;
-      case "Highest rated repositories":
-        setOrder({
-          label: "Highest rated repositories",
-          orderBy: "RATING_AVERAGE",
-          orderDirection: "DESC",
-        });
-        break;
-      case "Lowest rated repositories":
-        setOrder({
-          label: "Lowest rated repositories",
-          orderBy: "RATING_AVERAGE",
-          orderDirection: "ASC",
-        });
-        break;
-    }
-  };
 
   const onEndReach = () => {
     fetchMore();
@@ -132,9 +119,9 @@ const RepositoryList = () => {
   return (
     <RepositoryListContainer
       repositories={repositories}
-      navigate={navigate}
-      selectedValue={order.label}
-      onChange={onChange}
+      onRepositoryPress={(id) => navigate(`/repository/${id}`)}
+      selectedValue={order}
+      onChange={(itemValue) => setOrder(itemValue)}
       searchQuery={searchQuery}
       changeSearchQuery={setSearchQuery}
       onEndReach={onEndReach}
