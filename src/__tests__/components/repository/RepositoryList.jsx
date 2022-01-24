@@ -1,6 +1,22 @@
+/* eslint-disable jest/expect-expect */
 import React from "react";
-import { render } from "@testing-library/react-native";
+import { render, within } from "@testing-library/react-native";
 import { RepositoryListContainer } from "../../../components/repository/RepositoryList";
+
+const expectRepositoryToHaveCorrectInformation = (
+  item,
+  { name, description, language, stars, forks, reviews, rating }
+) => {
+  const wrappedItem = within(item);
+
+  expect(wrappedItem.getByText(name)).toBeDefined();
+  expect(wrappedItem.getByText(description)).toBeDefined();
+  expect(wrappedItem.getByText(language)).toBeDefined();
+  expect(wrappedItem.getByText(stars)).toBeDefined();
+  expect(wrappedItem.getByText(forks)).toBeDefined();
+  expect(wrappedItem.getByText(reviews)).toBeDefined();
+  expect(wrappedItem.getByText(rating)).toBeDefined();
+};
 
 describe("RepositoryList", () => {
   describe("RepositoryListContainer", () => {
@@ -47,34 +63,34 @@ describe("RepositoryList", () => {
           },
         ],
       };
-      const { debug, getAllByTestId } = render(
+      const { getAllByTestId } = render(
         <RepositoryListContainer repositories={repositories} />
       );
 
       const repositoryItems = getAllByTestId("repositoryItem");
       const [firstItem, secondItem] = repositoryItems;
-      debug();
+
       //first item
-      expect(firstItem).toHaveTextContent("jaredpalmer/formik");
-      expect(firstItem).toHaveTextContent(
-        "Build forms in React, without the tears"
-      );
-      expect(firstItem).toHaveTextContent("TypeScript");
-      expect(firstItem).toHaveTextContent("1.6kForks");
-      expect(firstItem).toHaveTextContent("21.9kStars");
-      expect(firstItem).toHaveTextContent("88Rating");
-      expect(firstItem).toHaveTextContent("3Reviews");
+      expectRepositoryToHaveCorrectInformation(firstItem, {
+        name: "jaredpalmer/formik",
+        description: "Build forms in React, without the tears",
+        language: "TypeScript",
+        stars: "21.9k",
+        forks: "1.6k",
+        reviews: "3",
+        rating: "88",
+      });
 
       //second item
-      expect(secondItem).toHaveTextContent("async-library/react-async");
-      expect(secondItem).toHaveTextContent(
-        "Flexible promise-based React data loader"
-      );
-      expect(secondItem).toHaveTextContent("JavaScript");
-      expect(secondItem).toHaveTextContent("69Forks");
-      expect(secondItem).toHaveTextContent("1.8kStars");
-      expect(secondItem).toHaveTextContent("72Rating");
-      expect(secondItem).toHaveTextContent("3Reviews");
+      expectRepositoryToHaveCorrectInformation(secondItem, {
+        name: "async-library/react-async",
+        description: "Flexible promise-based React data loader",
+        language: "JavaScript",
+        stars: "1.8k",
+        forks: "69",
+        reviews: "72",
+        rating: "3",
+      });
     });
   });
 });
