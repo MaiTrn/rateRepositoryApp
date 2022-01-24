@@ -43,14 +43,12 @@ export class RepositoryListContainer extends React.Component {
     );
   };
 
-  repositoryItemContainer = ({ item }) => {
-    console.log(item);
-    return (
-      <Pressable onPress={() => this.props.onRepositoryPress(item.id)}>
-        <RepositoryItem item={item} />
-      </Pressable>
-    );
-  };
+  repositoryItemContainer = ({ item }) => (
+    <Pressable onPress={() => this.props.onRepositoryPress(item.id)}>
+      <RepositoryItem item={item} />
+    </Pressable>
+  );
+
   render() {
     return (
       <FlatList
