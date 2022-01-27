@@ -13,22 +13,6 @@ import theme from "../../theme";
 export class RepositoryListContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      // Get the nodes from the edges array
-      repositoryNodes: this.props.repositories
-        ? this.props.repositories.edges.map((edge) => edge.node)
-        : [],
-    };
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.repositories !== this.props.repositories) {
-      this.setState({
-        repositoryNodes: this.props.repositories
-          ? this.props.repositories.edges.map((edge) => edge.node)
-          : [],
-      });
-    }
   }
 
   renderHeader = () => {
@@ -50,11 +34,15 @@ export class RepositoryListContainer extends React.Component {
   );
 
   render() {
+    const repositoryNodes = this.props.repositories
+      ? this.props.repositories.edges.map((edge) => edge.node)
+      : [];
+
     return (
       <FlatList
         keyExtractor={(item) => `${item.id}`}
         ListHeaderComponent={this.renderHeader}
-        data={this.state.repositoryNodes}
+        data={repositoryNodes}
         ItemSeparatorComponent={ItemSeparator}
         renderItem={this.repositoryItemContainer}
         onEndReachedThreshold={0.5}
